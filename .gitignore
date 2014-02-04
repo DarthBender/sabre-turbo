@@ -1,6 +1,3 @@
 npm-debug.log
-node_modules/*/node_modules
-<<<<<<< HEAD
-
-=======
->>>>>>> 11a99fc013511abc93c1a9b7dc3a7f7dd3cb09bc
+node_modules
+.htpasswd
