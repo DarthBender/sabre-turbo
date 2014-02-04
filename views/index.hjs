@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{ title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel='shortcut icon' href='/images/tg.ico' type='image/x-icon' />
+    <link rel='stylesheet' href='/stylesheets/bootstrap.min.css'/>
+    <link rel='stylesheet' href='/stylesheets/bootstrap-theme.min.css'/>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+  </head>
+  <body>
+    <div class="container">
+        <div class="row">
+        	<div class="span12">
+            	{{> menu}}
+            </div>
+            <div class="span12">
+        		<div class="content">
+        			{{> pageContent}}
+        		</div>
+			</div>
+        </div>
+    </div>
+  <script src="http://code.jquery.com/jquery.js"></script>
+  <script src="/javascripts/bootstrap.min.js"></script>
+  </body>
+  <footer>
+  <h6 class="text-muted text-center">Powered by us<h6>
+  </footer>
+</html>

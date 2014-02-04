@@ -1,0 +1,14 @@
+<div class="social-page">
+	{{#serviceRows}}
+	<div class="row-fluid">
+		{{#service}}
+			{{#firstServiceInRaw}}
+				<div class="span2 offset3" ><a href="{{link}}" target=_blank><img src="{{image}}"></a></div>
+			{{/firstServiceInRaw}}
+			{{^firstServiceInRaw}}
+				<div class="span2" ><a href="{{link}}" target=_blank><img src="{{image}}"></a></div>
+			{{/firstServiceInRaw}}
+		{{/service}}
+	</div>
+	{{/serviceRows}}
+</div>

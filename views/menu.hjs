@@ -1,0 +1,23 @@
+<ul class="nav nav-pills pull-right">
+{{#pages}}
+	<li {{#selected}}class="active"{{/selected}} {{#disabled}}class="disabled"{{/disabled}}>
+		<a {{#disabled}}href="#"{{/disabled}}{{^disabled}}href="{{link}}"{{/disabled}}>
+			{{#glyphicon}}
+				<span class="glyphicon {{glyphicon}}"></span>
+			{{/glyphicon}}
+			{{^glyphicon}} 
+				{{label}}
+			{{/glyphicon}}
+		</a>
+	</li>
+{{/pages}}
+		<li class="dropdown"> 
+			<a id="extlinks" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-new-window"> <span class="caret"></span></a>
+			<ul class="dropdown-menu" role="menu" aria-labelledby="extlinks">
+			{{#externalLinks}}
+				<li><a href="{{link}}" target="_blank"><span class="glyphicon {{glyphicon}}"></span> {{label}}</a></li>
+			{{/externalLinks}}
+			</ul>
+		</li>
+		<li class="disabled"><a href="#"><span class="glyphicon glyphicon-off"></a></span></li>
+</ul>
