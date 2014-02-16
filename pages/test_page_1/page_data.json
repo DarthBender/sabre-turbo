@@ -1,5 +1,13 @@
 {
-	"title":"Test Page 1",
-	"glyphicon":"glyphicon-tree-conifer",
-	"disabled":false
+	"common_data":
+		{
+			"title":"Just test page"
+		},
+	"presentation_data": 
+		{
+			"glyphicon":"glyphicon-tree-conifer",
+			"disabled":false
+		},
+	"user_data":
+		{}
 }

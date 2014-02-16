@@ -10,31 +10,35 @@ exports.getPage = function(page_link){
 	var siteSettings = DataProvider.getSiteSettings();
 
 	// Read menu template
-	var menu_view_path = views_path + siteSettings.menu_view;
+	var menuViewPath = views_path + siteSettings.menu_view;
 	pageLayoutData.menu = Hogan.compile(
-			fs.readFileSync(menu_view_path, siteSettings.encoding));
+			fs.readFileSync(menuViewPath, siteSettings.encoding));
 
 	// Read page template
-	var page_data = DataProvider.getFullPageInfoByLink(page_link);
-	var page_view_path = views_path + page_data.page_view; 
+	var pageData = DataProvider.getFullPageInfoByLink(page_link);
+	var pageViewPath = views_path + pageData.presentation_data.page_view; 
 	pageLayoutData.pageContent = Hogan.compile(
-			fs.readFileSync(page_view_path, siteSettings.encoding));
+			fs.readFileSync(pageViewPath, siteSettings.encoding));
 	
 	// Get data for menu rendering
-	var menu_data = new Object();
-	menu_data.pages = DataProvider.getMenuData();
+	var menuData = new Object();
+	menuData.menu_items = DataProvider.getMenuItemsData();
 
-	for(n in menu_data.pages) {
-		if(menu_data.pages[n] != null) {
-			menu_data.pages[n].selected = menu_data.pages[n].link == page_link;
+	for(n in menuData.menu_items) {
+		if(menuData.menu_items[n] != null) {
+			menuData.menu_items[n].selected = menuData.menu_items[n].link == page_link;
 		}
 	}
 
 	// Get data for page content
 	var pageContentData = 
-		Tools.mergeObjectsExcludePresentationFields(
-			menu_data, 
-			page_data);
+		Tools.mergeObjects(
+			menuData, 
+			pageData.common_data);
+
+	Tools.mergeObjects(
+		pageContentData, 
+		pageData.user_data);
 
 	// Merge everyhting together and render page
 	return Hogan.compile(

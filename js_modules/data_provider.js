@@ -9,8 +9,8 @@ exports.getSiteSettings = function(){
 	return siteSettings;
 }
 
-exports.getPagesWithReload = function(reread) {
-	if(reread == true || !pages){
+exports.getPagesWithReload = function(reload) {
+	if(reload == true || !pages){
 		var data = fs.readFileSync(pages_data_file);
 		if(data){
 			try{
@@ -28,13 +28,15 @@ exports.getPages = function() {
 };
 
 exports.getMenuItemsData = function(){
-	if(!menu_items){
-		var full_page_data = getPages();
+	if(menu_items.length == 0){
+		var full_page_data = this.getPages();
+		
 		for(idx in full_page_data){
-			menu_items[idx].title = full_page_data[idx].title;
-			menu_items[idx].glyphicon = full_page_data[idx].glyphicon;
-			menu_items[idx].disabled = full_page_data[idx].disabled;
-			menu_items[idx].link = full_page_data[idx].link;
+			menu_items[idx] = new Object();
+			menu_items[idx].title = full_page_data[idx].common_data.title;
+			menu_items[idx].glyphicon = full_page_data[idx].presentation_data.glyphicon;
+			menu_items[idx].disabled = full_page_data[idx].presentation_data.disabled;
+			menu_items[idx].link = full_page_data[idx].presentation_data.link;
 		}
 	}
 	return menu_items;
@@ -48,7 +50,7 @@ exports.getMenuItemsData = function(){
 
 exports.getFullPageInfoByLink = function(pageLink){
 	for(n in pages){
-		if(pages[n].link == pageLink){
+		if(pages[n].presentation_data.link == pageLink){
 			return pages[n];
 		}
 	}

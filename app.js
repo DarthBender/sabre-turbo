@@ -46,7 +46,7 @@ if ('development' == app.get('env')) {
 }
 var pages = DataProvider.getPagesWithReload(true);
 for(n in pages){
-	app.get(pages[n].link, function(req, res){
+	app.get(pages[n].presentation_data.link, function(req, res){
     res.send(PageRenderer.getPage(req.route.path)); 
   });
 }

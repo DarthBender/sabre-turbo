@@ -1,6 +1,14 @@
 {
-	"title":"Test Page 2",
-	"glyphicon":"glyphicon-tree-deciduous",
-	"link":"/custom-link",
-	"disabled":false
+	"common_data":
+		{
+			"title":"Test page with custom link to"
+		},
+	"presentation_data": 
+		{
+			"glyphicon":"glyphicon-tree-deciduous",
+			"link":"/custom-link",
+			"disabled":false
+		},
+	"user_data":
+		{}
 }

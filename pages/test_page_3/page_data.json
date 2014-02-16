@@ -1,5 +1,20 @@
 {
-	"title":"Page with no glyphicon",
-	"disabled":false,
-	"page_view":"custom.hjs"
+	"common_data":
+		{
+			"title":"Page with no glyphicon"
+		},	
+	"presentation_data": 
+		{
+			"disabled":false,
+			"page_view":"custom.hjs"
+		},
+	"user_data":
+		{
+			"user_stuff":
+			[
+				{"row_content":"Some super first row!"},
+				{"row_content":"And the new row!"},
+				{"row_content":"Guess what? The Row!"}
+			]
+		}
 }

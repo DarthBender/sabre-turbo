@@ -1,5 +1,5 @@
 <ul class="nav nav-pills pull-right">
-{{#pages}}
+{{#menu_items}}
 	<li {{#selected}}class="active"{{/selected}} {{#disabled}}class="disabled"{{/disabled}}>
 		<a {{#disabled}}href="#"{{/disabled}}{{^disabled}}href="{{link}}"{{/disabled}}>
 			{{#glyphicon}}
@@ -10,5 +10,5 @@
 			{{/glyphicon}}
 		</a>
 	</li>
-{{/pages}}
+{{/menu_items}}
 </ul>

@@ -10,12 +10,17 @@ var fs = require('fs')
 //
 exports.getHomePage = function(){
 	var page = new Object();
-	page.id = '/';
-	page.link = '/';
-	page.title = DataProvider.getSiteSettings().title;
-	page.glyphicon = DataProvider.getSiteSettings().home_glyphicon;
-	page.page_view = DataProvider.getSiteSettings().home_view;
-	page.disabled = false;
+
+	page.common_data = new Object();
+	page.common_data.title = DataProvider.getSiteSettings().title;
+	page.common_data.id = '/';
+	
+	page.presentation_data = new Object();
+	page.presentation_data.link = '/';
+	page.presentation_data.glyphicon = DataProvider.getSiteSettings().home_glyphicon;
+	page.presentation_data.page_view = DataProvider.getSiteSettings().home_view;
+	page.presentation_data.disabled = false;
+	
 	return page;
 };
 
@@ -42,18 +47,18 @@ exports.collectPageDataSync = function() {
 
 			// Point 'link' field to page_id in case setting has no cutom page link
 			// 'link' value should start with '/' for better matching with routes
-			if(!collected_pages[idx].link){
-				collected_pages[idx].link = '/' + page_id;
+			if(!collected_pages[idx].presentation_data.link){
+				collected_pages[idx].presentation_data.link = '/' + page_id;
 			}
 
 			// Point 'page_view' filed to default one from the site settings in case
 			// custom not provided
-			if(!collected_pages[idx].page_view){
-				collected_pages[idx].page_view = DataProvider.getSiteSettings().page_view;
+			if(!collected_pages[idx].presentation_data.page_view){
+				collected_pages[idx].presentation_data.page_view = DataProvider.getSiteSettings().page_view;
 			}
 
 			// Fill 'id' field
-			collected_pages[idx].id = page_id;
+			collected_pages[idx].common_data.id = page_id;
 		} else {
 			util.log("ERROR: Data for page '" + page_id + "' cannot be loaded!");
 			return false;
