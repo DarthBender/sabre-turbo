@@ -4,12 +4,14 @@
  */
 
 var express = require('express')
-  , routes = require('./routes')
+//  , routes = require('./routes')
   , user = require('./routes/user')
   , http = require('http')
   , path = require('path')
   , util = require('util')
-  , DataProvider = require('./js_modules/data_provider');
+  , PageCollector = require('./js_modules/page_collector')
+  , DataProvider = require('./js_modules/data_provider')
+  , PageRenderer = require('./js_modules/page_render');
    
 var app = express();
 
@@ -18,6 +20,7 @@ app.enable('trust proxy');
 app.set('port', process.env.PORT || 8275);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'html');
+app.set('env', 'development');
 app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.bodyParser());
@@ -27,18 +30,26 @@ app.use(express.session());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
-// development only
-//if ('development' == app.get('env')) {
-//  app.use(express.errorHandler());
-//}
-var pages = DataProvider.getPages();
-for(n in pages){
-	if(!pages[n].external){
-		app.get(pages[n].link, routes.index);
-	}	
+app.get('/', function(req, res){
+  res.send(PageRenderer.getIndexPage())
+});
+
+try {
+  PageCollector.collectPageDataSync();
+} catch (err) {
+  console.log("ERROR: Problem loading pages. " + err);
 }
 
-app.get('/655387a91dca.html', user.getCode);
+// development only
+if ('development' == app.get('env')) {
+  app.use(express.errorHandler());
+}
+var pages = DataProvider.getPagesWithReload(true);
+for(n in pages){
+	app.get(pages[n].link, function(req, res){
+    res.send(PageRenderer.getPage(req.route.path)); 
+  });
+}
 
 app.get('/users', user.list);
 

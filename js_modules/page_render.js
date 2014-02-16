@@ -3,45 +3,46 @@ var Hogan = require('hogan.js')
 	, Tools = require('./tools').Tools
 	, DataProvider = require('./data_provider')
 	, util = require('util')
-	, viewPath = __dirname + '/../views/';
+	, views_path = __dirname + '/../views/';
 
-exports.getPage = function(pageLink){
-	// Read common page data
-	var pageLayoutData = DataProvider.getCommonPageData();
-	
+exports.getPage = function(page_link){
+	var pageLayoutData = new Object();
+	var siteSettings = DataProvider.getSiteSettings();
+
 	// Read menu template
-	var menu_view_path = viewPath + pageLayoutData.menu_view;
+	var menu_view_path = views_path + siteSettings.menu_view;
 	pageLayoutData.menu = Hogan.compile(
-			fs.readFileSync(menu_view_path, pageLayoutData.encoding));	
-
-	// Get page description
-	var page = DataProvider.getPageByLink(pageLink);
+			fs.readFileSync(menu_view_path, siteSettings.encoding));
 
 	// Read page template
-	var page_view_path = viewPath + page.page_view;
+	var page_data = DataProvider.getFullPageInfoByLink(page_link);
+	var page_view_path = views_path + page_data.page_view; 
 	pageLayoutData.pageContent = Hogan.compile(
-			fs.readFileSync(page_view_path, pageLayoutData.encoding));
+			fs.readFileSync(page_view_path, siteSettings.encoding));
 	
 	// Get data for menu rendering
-	var menuData = new Object();
-	menuData.pages = DataProvider.getPages();
-	for(n in menuData.pages) {
-		if(menuData.pages[n] != null) {
-			menuData.pages[n].selected = menuData.pages[n].link == pageLink;
+	var menu_data = new Object();
+	menu_data.pages = DataProvider.getMenuData();
+
+	for(n in menu_data.pages) {
+		if(menu_data.pages[n] != null) {
+			menu_data.pages[n].selected = menu_data.pages[n].link == page_link;
 		}
 	}
-	menuData.externalLinks = DataProvider.getExternalLinks();
-	
-	// Get data for page content rendering
-	var pageContentData = Tools.mergeObjects(menuData);
-	
+
+	// Get data for page content
+	var pageContentData = 
+		Tools.mergeObjectsExcludePresentationFields(
+			menu_data, 
+			page_data);
+
 	// Merge everyhting together and render page
 	return Hogan.compile(
 		fs.readFileSync(
-				viewPath + pageLayoutData.index_view, 
-				pageLayoutData.encoding)).render(pageContentData, pageLayoutData);
+				views_path + siteSettings.index_view, 
+				siteSettings.encoding)).render(pageContentData, pageLayoutData);
 };
 
-exports.getPageContent = function(pageLink){
-	return Hogan.compile(fs.readFileSync(DataProvider.getPageViewByID(pageLink), Resources.encoding));
-};
+exports.getIndexPage = function() {
+	return this.getPage('/');
+}

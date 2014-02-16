@@ -1,8 +1,4 @@
 {
-	"title":"Technogeek Labs",
-	"encoding":"utf8",
-	"menu_view":"menu.hjs",
-	"index_view":"index.hjs",
 	"pages":
 		[
 			{

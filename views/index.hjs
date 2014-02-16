@@ -25,6 +25,6 @@
   <script src="/javascripts/bootstrap.min.js"></script>
   </body>
   <footer>
-  <h6 class="text-muted text-center">Powered by us<h6>
+  <h6 class="text-muted text-center">powered by node.js<h6>
   </footer>
 </html>

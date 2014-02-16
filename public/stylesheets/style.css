@@ -16,3 +16,7 @@ body {
 	font-family: 'Source Code Pro', sans-serif;
 	font-size: 30px;
 }
+
+.custom-style-class {
+	margin: 150px 0;
+}
