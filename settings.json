@@ -1,5 +1,5 @@
 {
-	"title":"Technogeek Labs",
+	"title":"Sabre Turbo",
 	"home_glyphicon":"glyphicon-home",
 
 	"encoding":"utf8",
@@ -8,5 +8,7 @@
 	"home_view":"home.hjs",
 	"index_view":"index.hjs",
 	"page_view":"page.hjs",
-	"blog_view":"blog.hjs"
+	"blog_view":"blog.hjs",
+
+	"page_content_md":"content.md"
 }

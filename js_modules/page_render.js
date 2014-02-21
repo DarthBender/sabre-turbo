@@ -3,7 +3,9 @@ var Hogan = require('hogan.js')
 	, Tools = require('./tools').Tools
 	, DataProvider = require('./data_provider')
 	, util = require('util')
-	, views_path = __dirname + '/../views/';
+	, marked = require('marked').setOptions({highlight: function (code) {return require('highlight.js').highlightAuto(code).value;}})
+	, views_path = __dirname + '/../views/'
+	, pages_path = __dirname + '/../pages/';
 
 exports.getPage = function(page_link){
 	var pageLayoutData = new Object();
@@ -31,14 +33,25 @@ exports.getPage = function(page_link){
 	}
 
 	// Get data for page content
+
+	// Collect data for the menu
 	var pageContentData = 
 		Tools.mergeObjects(
 			menuData, 
 			pageData.common_data);
 
+	// Collect user data if such presented in case of cutom used in Mustache view 
 	Tools.mergeObjects(
 		pageContentData, 
 		pageData.user_data);
+
+	// Read the Markdown page content and conver it to html
+	var contentMDFilePath = pages_path + pageData.common_data.id + '/' + siteSettings.page_content_md;
+	if(fs.existsSync(contentMDFilePath)){
+		pageContentData.page_body = marked(
+			fs.readFileSync(
+				contentMDFilePath, siteSettings.encoding));
+	}
 
 	// Merge everyhting together and render page
 	return Hogan.compile(
