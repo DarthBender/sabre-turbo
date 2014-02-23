@@ -51,12 +51,6 @@ exports.collectPageDataSync = function() {
 				collected_pages[idx].presentation_data.link = '/' + page_id;
 			}
 
-			// Point 'page_view' filed to default one from the site settings in case
-			// custom not provided
-			if(!collected_pages[idx].presentation_data.page_view){
-				collected_pages[idx].presentation_data.page_view = DataProvider.getSiteSettings().page_view;
-			}
-
 			// Fill 'id' field
 			collected_pages[idx].common_data.id = page_id;
 		} else {

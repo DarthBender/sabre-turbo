@@ -18,7 +18,18 @@ exports.getPage = function(page_link){
 
 	// Read page template
 	var pageData = DataProvider.getFullPageInfoByLink(page_link);
-	var pageViewPath = views_path + pageData.presentation_data.page_view; 
+	var pageViewPath;
+	if(pageData.presentation_data.page_view){
+		pageViewPath = pages_path + pageData.common_data.id + '/' + pageData.presentation_data.page_view;
+		if(!fs.existsSync(pageViewPath)){
+			pageViewPath = views_path + pageData.presentation_data.page_view;
+			if(!fs.existsSync(pageViewPath)){
+				pageViewPath = views_path + siteSettings.page_view;		
+			}
+		}
+	} else {
+		pageViewPath = views_path + siteSettings.page_view;
+	}
 	pageLayoutData.pageContent = Hogan.compile(
 			fs.readFileSync(pageViewPath, siteSettings.encoding));
 	
@@ -33,7 +44,6 @@ exports.getPage = function(page_link){
 	}
 
 	// Get data for page content
-
 	// Collect data for the menu
 	var pageContentData = 
 		Tools.mergeObjects(
