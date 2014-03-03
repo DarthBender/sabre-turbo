@@ -9,6 +9,7 @@
 	"index_view":"index.hjs",
 	"page_view":"page.hjs",
 	"blog_view":"blog.hjs",
+	"entry_data":"page_data.json",
 
 	"page_content_md":"content.md"
 }

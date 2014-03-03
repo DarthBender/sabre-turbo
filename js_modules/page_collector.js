@@ -1,7 +1,6 @@
 var fs = require('fs')
 	, path = require('path')
 	, util = require('util')
-	, pages_dir = __dirname + '/../pages'
 	, pages_cache = __dirname + '/../data/pages.json'
 	, DataProvider = require('./data_provider');
 
@@ -24,46 +23,56 @@ exports.getHomePage = function(){
 	return page;
 };
 
-exports.collectPageDataSync = function() {
-	var files = fs.readdirSync(pages_dir);
-	var collected_pages = new Array();
+exports.collectEntriesDataSync = function(entries_path){
+	var files = fs.readdirSync(entries_path);
+	var collected_entries = new Array();
 
 	// Collect informaion about pages from the appropriate folder
 	for(var idx in files){
-		var page_id = files[idx];
+		var entry_id = files[idx];
 		// Read page settings
-		var data = fs.readFileSync(pages_dir + '/' + page_id + '/page_data.json');
+		var data = fs.readFileSync(entries_path + '/' + entry_id + '/' + DataProvider.getSiteSettings().entry_data);
 		if(data){
-			var page_data;
+			var entry_data;
 			try {
-				page_data = JSON.parse(data);
+				entry_data = JSON.parse(data);
 			} catch (err) {
-				util.log("ERROR; Data for page '" + page_id + "' cannot be parsed!");
-				return false;
+				util.log("ERROR; Data for page '" + entry_id + "' cannot be parsed!");
+				return null;
 			}
-			if(page_data){
-				collected_pages[idx] = page_data;
+			if(entry_data){
+				collected_entries[idx] = entry_data;
 			}
 
-			// Point 'link' field to page_id in case setting has no cutom page link
+			// Point 'link' field to entry_id in case setting has no cutom page link
 			// 'link' value should start with '/' for better matching with routes
-			if(!collected_pages[idx].presentation_data.link){
-				collected_pages[idx].presentation_data.link = '/' + page_id;
+			if(!collected_entries[idx].presentation_data.link){
+				collected_entries[idx].presentation_data.link = '/' + entry_id;
 			}
 
 			// Fill 'id' field
-			collected_pages[idx].common_data.id = page_id;
+			collected_entries[idx].common_data.id = entry_id;
 		} else {
-			util.log("ERROR: Data for page '" + page_id + "' cannot be loaded!");
-			return false;
+			util.log("ERROR: Data for page '" + entry_id + "' cannot be loaded!");
+			return null;
 		}
 	}
 
+	return collected_entries;
+
+}
+
+exports.collectPages = function(){
+	var pages = this.collectEntriesDataSync(__dirname + '/../pages');
+
 	// Add home page to the begginig of the page array before writing
-	collected_pages.unshift(this.getHomePage());
+	pages.unshift(this.getHomePage());
 
 	// Write collected pages cache
-	fs.writeFileSync(pages_cache, JSON.stringify(collected_pages));
+	fs.writeFileSync(pages_cache, JSON.stringify(pages));
 	return true;
 }
 
+exports.collectBlogDataSync = function(){
+	var blog_entries = this.collectEntriesDataSync(__dirname + '/../blog');
+}

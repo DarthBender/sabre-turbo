@@ -4,10 +4,10 @@ var Hogan = require('hogan.js')
 	, DataProvider = require('./data_provider')
 	, util = require('util')
 	, marked = require('marked').setOptions({highlight: function (code) {return require('highlight.js').highlightAuto(code).value;}})
-	, views_path = __dirname + '/../views/'
-	, pages_path = __dirname + '/../pages/';
+	, views_path = __dirname + '/../views/';
 
-exports.getPage = function(page_link){
+exports.getPage = function(pages_path, page_link){
+
 	var pageLayoutData = new Object();
 	var siteSettings = DataProvider.getSiteSettings();
 
@@ -18,6 +18,7 @@ exports.getPage = function(page_link){
 
 	// Read page template
 	var pageData = DataProvider.getFullPageInfoByLink(page_link);
+
 	var pageViewPath;
 	if(pageData.presentation_data.page_view){
 		pageViewPath = pages_path + pageData.common_data.id + '/' + pageData.presentation_data.page_view;
@@ -56,7 +57,7 @@ exports.getPage = function(page_link){
 		pageData.user_data);
 
 	// Read the Markdown page content and conver it to html
-	var contentMDFilePath = pages_path + pageData.common_data.id + '/' + siteSettings.page_content_md;
+	var contentMDFilePath = pages_path + '/' + pageData.common_data.id + '/' + siteSettings.page_content_md;
 	if(fs.existsSync(contentMDFilePath)){
 		pageContentData.page_body = marked(
 			fs.readFileSync(
@@ -71,5 +72,5 @@ exports.getPage = function(page_link){
 };
 
 exports.getIndexPage = function() {
-	return this.getPage('/');
+	return this.getPage(__dirname, '/');
 }

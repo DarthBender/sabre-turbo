@@ -35,7 +35,7 @@ app.get('/', function(req, res){
 });
 
 try {
-  PageCollector.collectPageDataSync();
+  PageCollector.collectPages();
 } catch (err) {
   console.log("ERROR: Problem loading pages. " + err);
 }
@@ -45,9 +45,15 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 var pages = DataProvider.getPagesWithReload(true);
+
 for(n in pages){
+  if(!pages[n].presentation_data.link){
+    pages[n].presentation_data.link = '/';
+  }
+
+  var entryPath = __dirname + '/pages';
 	app.get(pages[n].presentation_data.link, function(req, res){
-    res.send(PageRenderer.getPage(req.route.path)); 
+    res.send(PageRenderer.getPage(__dirname + '/pages', req.route.path)); 
   });
 }
 
