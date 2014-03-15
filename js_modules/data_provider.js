@@ -2,21 +2,21 @@ var   fs = require('fs')
 	, util = require('util')
 	, pages = new Array()
 	, menu_items = new Array()
-	, pages_data_file = __dirname + '/../data/pages.json'
+	, errorHandler = require('./error_handler');
 	, siteSettings = require('../settings.json');
 
 exports.getSiteSettings = function(){
 	return siteSettings;
 }
 
-exports.getPagesWithReload = function(reload) {
+exports.getPagesWithReload = function(pages_data_file, reload) {
 	if(reload == true || !pages){
 		var data = fs.readFileSync(pages_data_file);
 		if(data){
 			try{
 				pages = JSON.parse(data);
 			} catch (err) {
-				util.log("ERROR: Pages data cache parse fail!");
+				errorHandler.error("Pages data cache parse fail!");
 			}
 		}
 	}

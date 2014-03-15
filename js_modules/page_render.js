@@ -1,6 +1,6 @@
 var Hogan = require('hogan.js')
 	, fs = require('fs')
-	, Tools = require('./tools').Tools
+	, Tools = require('./tools')
 	, DataProvider = require('./data_provider')
 	, util = require('util')
 	, marked = require('marked').setOptions({highlight: function (code) {return require('highlight.js').highlightAuto(code).value;}})

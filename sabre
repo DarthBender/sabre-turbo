@@ -1,0 +1,108 @@
+#!/usr/bin/env node
+
+var builderStates = Object.freeze({init:'init', build:'build', update:'update'})
+	, argv = process.argv.slice(2)
+	, siteDir = null
+	, cacheDir = null
+	, fsTools = require('./js_modules/fs_tools')
+	, dataProvider = require('./js_modules/data_provider')
+	, pageCollector = require('./js_modules/page_collector')
+	, pageRenderer = require('./js_modules/page_render')
+	, errorHandler = require('./js_modules/error_handler');
+
+saintyCheck = function(){return true;};
+
+clearCache = function() {
+	fsTools.rmkdirSync(cacheDir);
+};
+
+printUsage = function(){};
+
+init = function(prjName){
+	siteDir = process.cwd() + '/' + prjName;
+
+	if(fsTools.existsSync(prjName)) {
+		errorHandler.error('There already exists directory with name ' + prjName + '!');
+		process.exist(1);
+	}
+
+	cacheDir = siteDir + '/cache'
+
+	clearCache();	
+
+	// check is directory exist and remove it
+	// in case of 'init' we need rebuild site
+	// from the scratch
+	fsTools.rmkdirSync(siteDir);
+
+	// Initalize site dierctory with common data
+	fsTools.copyInitSiteData(siteDir);
+
+	// Collect all pages
+	var pages = null;
+	try {
+	  pageCollector.collectPages();
+	  pages = dataProvider.getPagesWithReload(true);
+	} catch (err) {
+	  errorHandler.error("ERROR: Problem loading pages. " + err);
+	}
+
+	fsTools.writeFile(
+		siteDir + '/index.html', 
+		pageRenderer.getIndexPage(),
+		function(err){
+			if(err) {
+				errorHandler.error(err);
+			}
+			errorHandler.info('Index file is written!');
+		});
+
+	for(n in pages){
+		if(!pages[n].presentation_data.link){
+			pages[n].presentation_data.link = '/';
+		}
+
+		
+		var fileName = 
+		fsTools.writeFile(
+			siteDir + pages[n].presentation_data.link,
+			pageRenderer.getPage(__dirname + '/pages', pages[n].presentation_data.link),
+			function(err) {
+				if(err){
+					errorHandler.error(err);
+				}
+			});
+	}
+};
+
+build = function(){
+	errorHandler.error('Not implemented yet!');
+};
+
+update = function(){
+	errorHandler.error('Not implemented yet!');
+};
+
+if(!saintyCheck()){
+	printUsage();
+}
+
+try {
+	if(argv[0] == builderStates.init) {
+		if(argv[1]) {
+			init(argv[1]);
+		} else {
+			init('sabre-turbo');
+		}
+	} else if (argv[0] == builderStates.build) {
+		build();
+	} else {
+		update();
+	}
+} catch (err) {
+	if(err) {
+		errorHandler.error('There was a problem executing sabre-turbo!');
+		errorHandler.error(err);
+		process.exit(1);
+	}
+}

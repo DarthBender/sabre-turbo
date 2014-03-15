@@ -47,7 +47,7 @@ exports.collectEntriesDataSync = function(entries_path){
 			// Point 'link' field to entry_id in case setting has no cutom page link
 			// 'link' value should start with '/' for better matching with routes
 			if(!collected_entries[idx].presentation_data.link){
-				collected_entries[idx].presentation_data.link = '/' + entry_id;
+				collected_entries[idx].presentation_data.link = '/' + entry_id + '.html';
 			}
 
 			// Fill 'id' field
