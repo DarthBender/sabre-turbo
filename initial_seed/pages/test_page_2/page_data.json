@@ -6,7 +6,7 @@
 	"presentation_data": 
 		{
 			"glyphicon":"glyphicon-tree-deciduous",
-			"link":"/custom-link.html",
+			"link":"/custom-link",
 			"disabled":false
 		},
 	"user_data":

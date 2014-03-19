@@ -2,71 +2,94 @@
 
 var builderStates = Object.freeze({init:'init', build:'build', update:'update'})
 	, argv = process.argv.slice(2)
-	, siteDir = null
-	, cacheDir = null
 	, fsTools = require('./js_modules/fs_tools')
-	, dataProvider = require('./js_modules/data_provider')
+	, cacheManager = require('./js_modules/cache_manager')
 	, pageCollector = require('./js_modules/page_collector')
 	, pageRenderer = require('./js_modules/page_render')
 	, errorHandler = require('./js_modules/error_handler');
 
-saintyCheck = function(){return true;};
+saintyCheck = function(clear) {
+	var siteDir = process.cwd() + '/site';
+	var pagesDir = process.cwd() + '/pages';
+	var cacheDir = process.cwd() + '/cache';
 
-clearCache = function() {
-	fsTools.rmkdirSync(cacheDir);
+	if(!fsTools.existsSync(siteDir)){
+		return false;
+	}
+
+	if(!fsTools.existsSync(pagesDir)){
+		return false;
+	}
+
+	if(clear){
+		fsTools.rmkdirSync(cacheDir);
+	} else {
+		if(!fsTools.existsSync(cacheDir)){
+			return false;
+		}		
+	}
+
+	return true;
 };
 
 printUsage = function(){};
 
 init = function(prjName){
-	siteDir = process.cwd() + '/' + prjName;
+	var projDir = process.cwd() + '/' + prjName;
 
 	if(fsTools.existsSync(prjName)) {
 		errorHandler.error('There already exists directory with name ' + prjName + '!');
-		process.exist(1);
+		process.exit(1);
 	}
-
-	cacheDir = siteDir + '/cache'
-
-	clearCache();	
 
 	// check is directory exist and remove it
 	// in case of 'init' we need rebuild site
 	// from the scratch
-	fsTools.rmkdirSync(siteDir);
+	fsTools.rmkdirSync(projDir);
 
 	// Initalize site dierctory with common data
-	fsTools.copyInitSiteData(siteDir);
+	fsTools.copyInitialSeedSiteData(projDir);
+};
 
-	// Collect all pages
-	var pages = null;
-	try {
-	  pageCollector.collectPages();
-	  pages = dataProvider.getPagesWithReload(true);
-	} catch (err) {
-	  errorHandler.error("ERROR: Problem loading pages. " + err);
+build = function(){
+
+	var root = process.cwd();
+	var siteDir = root + '/site';
+	var pagesDir = root + '/pages';
+	var cacheDir = root + '/cache';
+
+	if(!saintyCheck(true)){
+		printUsage();
+		process.exit(0);
 	}
 
-	fsTools.writeFile(
-		siteDir + '/index.html', 
-		pageRenderer.getIndexPage(),
-		function(err){
-			if(err) {
-				errorHandler.error(err);
-			}
-			errorHandler.info('Index file is written!');
-		});
+	var pages = null;
+	try {
+		// Collect all pages
+		pages = pageCollector.collectPages(pagesDir, cacheDir + '/pages.json');
+		// And cache them
+		cacheManager.cachePages(pages);
+	} catch (err) {
+		errorHandler.error("Problem loading pages. " + err);
+		process.exit(1);
+	}
 
+	// Now go through all the pages
+	// and generate static output
 	for(n in pages){
 		if(!pages[n].presentation_data.link){
 			pages[n].presentation_data.link = '/';
 		}
 
-		
+		var curPageDir = siteDir + pages[n].presentation_data.link;
+		if(curPageDir != siteDir + '/'){
+			fsTools.rmkdirSync(curPageDir);
+		}
+
 		var fileName = 
 		fsTools.writeFile(
-			siteDir + pages[n].presentation_data.link,
-			pageRenderer.getPage(__dirname + '/pages', pages[n].presentation_data.link),
+			curPageDir + '/index.html',
+			pageRenderer.renderPage(pagesDir, pages[n].presentation_data.link),
 			function(err) {
 				if(err){
 					errorHandler.error(err);
@@ -75,26 +98,22 @@ init = function(prjName){
 	}
 };
 
-build = function(){
-	errorHandler.error('Not implemented yet!');
-};
-
 update = function(){
 	errorHandler.error('Not implemented yet!');
 };
 
-if(!saintyCheck()){
-	printUsage();
-}
-
 try {
 	if(argv[0] == builderStates.init) {
+		// Init is calles with the project name
+		// in case no project name provided
+		// sabre-turbo is used
 		if(argv[1]) {
 			init(argv[1]);
 		} else {
 			init('sabre-turbo');
 		}
 	} else if (argv[0] == builderStates.build) {
+		// Build is called
 		build();
 	} else {
 		update();

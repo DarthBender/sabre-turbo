@@ -1,15 +1,15 @@
 var Hogan = require('hogan.js')
 	, fs = require('fs')
 	, Tools = require('./tools')
-	, DataProvider = require('./data_provider')
+	, cacheManager = require('./cache_manager')
 	, util = require('util')
 	, marked = require('marked').setOptions({highlight: function (code) {return require('highlight.js').highlightAuto(code).value;}})
 	, views_path = __dirname + '/../views/';
 
-exports.getPage = function(pages_path, page_link){
+exports.renderPage = function(pages_path, page_link){
 
 	var pageLayoutData = new Object();
-	var siteSettings = DataProvider.getSiteSettings();
+	var siteSettings = cacheManager.getSiteSettings();
 
 	// Read menu template
 	var menuViewPath = views_path + siteSettings.menu_view;
@@ -17,7 +17,7 @@ exports.getPage = function(pages_path, page_link){
 			fs.readFileSync(menuViewPath, siteSettings.encoding));
 
 	// Read page template
-	var pageData = DataProvider.getFullPageInfoByLink(page_link);
+	var pageData = cacheManager.getFullPageInfoByLink(page_link);
 
 	var pageViewPath;
 	if(pageData.presentation_data.page_view){
@@ -36,7 +36,7 @@ exports.getPage = function(pages_path, page_link){
 	
 	// Get data for menu rendering
 	var menuData = new Object();
-	menuData.menu_items = DataProvider.getMenuItemsData();
+	menuData.menu_items = cacheManager.getMenuItemsData();
 
 	for(n in menuData.menu_items) {
 		if(menuData.menu_items[n] != null) {
@@ -72,5 +72,5 @@ exports.getPage = function(pages_path, page_link){
 };
 
 exports.getIndexPage = function() {
-	return this.getPage(__dirname, '/');
+	return 
 }
