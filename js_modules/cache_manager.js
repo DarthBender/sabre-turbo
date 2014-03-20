@@ -47,13 +47,13 @@ exports.getMenuItemsData = function(){
 	return menu_items;
 };
 
-exports.getFullPageInfoByLink = function(pageLink){
+exports.getFullPageInfoById = function(page_id){
 	if(!pagesCache){
 		this.getPages();
 	}
 
 	for(n in pagesCache){
-		if(pagesCache[n].presentation_data.link == pageLink){
+		if(pagesCache[n].common_data.id == page_id){
 			return pagesCache[n];
 		}
 	}

@@ -6,7 +6,7 @@ var Hogan = require('hogan.js')
 	, marked = require('marked').setOptions({highlight: function (code) {return require('highlight.js').highlightAuto(code).value;}})
 	, views_path = __dirname + '/../views/';
 
-exports.renderPage = function(pages_path, page_link){
+exports.renderPage = function(pages_path, page_id){
 
 	var pageLayoutData = new Object();
 	var siteSettings = cacheManager.getSiteSettings();
@@ -17,7 +17,7 @@ exports.renderPage = function(pages_path, page_link){
 			fs.readFileSync(menuViewPath, siteSettings.encoding));
 
 	// Read page template
-	var pageData = cacheManager.getFullPageInfoByLink(page_link);
+	var pageData = cacheManager.getFullPageInfoById(page_id);
 
 	var pageViewPath;
 	if(pageData.presentation_data.page_view){
@@ -38,9 +38,11 @@ exports.renderPage = function(pages_path, page_link){
 	var menuData = new Object();
 	menuData.menu_items = cacheManager.getMenuItemsData();
 
+	var pageLink = pageData.presentation_data.link;
+
 	for(n in menuData.menu_items) {
 		if(menuData.menu_items[n] != null) {
-			menuData.menu_items[n].selected = menuData.menu_items[n].link == page_link;
+			menuData.menu_items[n].selected = menuData.menu_items[n].link == pageLink;
 		}
 	}
 
@@ -70,7 +72,3 @@ exports.renderPage = function(pages_path, page_link){
 				views_path + siteSettings.index_view, 
 				siteSettings.encoding)).render(pageContentData, pageLayoutData);
 };
-
-exports.getIndexPage = function() {
-	return 
-}

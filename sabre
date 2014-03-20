@@ -77,19 +77,22 @@ build = function(){
 	// Now go through all the pages
 	// and generate static output
 	for(n in pages){
-		if(!pages[n].presentation_data.link){
-			pages[n].presentation_data.link = '/';
-		}
 
-		var curPageDir = siteDir + pages[n].presentation_data.link;
-		if(curPageDir != siteDir + '/'){
+		var curPageDir = '';
+		if(!pages[n].presentation_data.external) {
+			curPageDir = siteDir + '/' +pages[n].common_data.id;
+			fsTools.rmkdirSync(curPageDir);
+		} else if (pages[n].common_data.id) {
+			curPageDir = siteDir;
+		} else {
+			curPageDir = siteDir + pages[n].presentation_data.link;
 			fsTools.rmkdirSync(curPageDir);
 		}
 
 		var fileName = 
 		fsTools.writeFile(
 			curPageDir + '/index.html',
-			pageRenderer.renderPage(pagesDir, pages[n].presentation_data.link),
+			pageRenderer.renderPage(pagesDir, pages[n].common_data.id),
 			function(err) {
 				if(err){
 					errorHandler.error(err);

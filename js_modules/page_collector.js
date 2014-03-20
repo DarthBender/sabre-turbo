@@ -12,7 +12,7 @@ exports.getHomePage = function(){
 	var page = new Object();
 
 	page.common_data = new Object();
-	page.common_data.title = cacheManager.getSiteSettings().title;
+	page.common_data.title = 'Home';
 	page.common_data.id = '/';
 	
 	page.presentation_data = new Object();
