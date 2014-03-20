@@ -13,18 +13,18 @@ saintyCheck = function(clear) {
 	var pagesDir = process.cwd() + '/pages';
 	var cacheDir = process.cwd() + '/cache';
 
-	if(!fsTools.existsSync(siteDir)){
+	if(!fsTools.existsSync(siteDir)) {
 		return false;
 	}
 
-	if(!fsTools.existsSync(pagesDir)){
+	if(!fsTools.existsSync(pagesDir)) {
 		return false;
 	}
 
-	if(clear){
+	if(clear) {
 		fsTools.rmkdirSync(cacheDir);
 	} else {
-		if(!fsTools.existsSync(cacheDir)){
+		if(!fsTools.existsSync(cacheDir)) {
 			return false;
 		}		
 	}
@@ -32,9 +32,9 @@ saintyCheck = function(clear) {
 	return true;
 };
 
-printUsage = function(){};
+printUsage = function() {};
 
-init = function(prjName){
+init = function(prjName) {
 	var projDir = process.cwd() + '/' + prjName;
 
 	if(fsTools.existsSync(prjName)) {
@@ -51,14 +51,15 @@ init = function(prjName){
 	fsTools.copyInitialSeedSiteData(projDir);
 };
 
-build = function(){
+build = function() {
 
 	var root = process.cwd();
-	var siteDir = root + '/site';
-	var pagesDir = root + '/pages';
-	var cacheDir = root + '/cache';
+	var siteDir = root + '/site/';
+	var pagesDir = root + '/pages/';
+	var cacheDir = root + '/cache/';
+	var viewsDir = root + '/views/';
 
-	if(!saintyCheck(true)){
+	if(!saintyCheck(true)) {
 		printUsage();
 		process.exit(0);
 	}
@@ -66,7 +67,7 @@ build = function(){
 	var pages = null;
 	try {
 		// Collect all pages
-		pages = pageCollector.collectPages(pagesDir, cacheDir + '/pages.json');
+		pages = pageCollector.collectPages(pagesDir, cacheDir + 'pages.json');
 		// And cache them
 		cacheManager.cachePages(pages);
 	} catch (err) {
@@ -80,19 +81,19 @@ build = function(){
 
 		var curPageDir = '';
 		if(pages[n].presentation_data.external && pages[n].presentation_data.external) {
-			curPageDir = siteDir + '/' +pages[n].common_data.id;
+			curPageDir = siteDir + pages[n].common_data.id + '/';
 			fsTools.rmkdirSync(curPageDir);
 		} else if (pages[n].common_data.id == '/') {
 			curPageDir = siteDir;
 		} else {
-			curPageDir = siteDir + pages[n].presentation_data.link;
+			curPageDir = siteDir + pages[n].presentation_data.link + '/';
 			fsTools.rmkdirSync(curPageDir);
 		}
 
 		var fileName = 
 		fsTools.writeFile(
-			curPageDir + '/index.html',
-			pageRenderer.renderPage(pagesDir, pages[n].common_data.id),
+			curPageDir + 'index.html',
+			pageRenderer.renderPage(pagesDir, viewsDir, pages[n].common_data.id),
 			function(err) {
 				if(err){
 					errorHandler.error(err);
@@ -101,7 +102,7 @@ build = function(){
 	}
 };
 
-update = function(){
+update = function() {
 	errorHandler.error('Not implemented yet!');
 };
 

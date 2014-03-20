@@ -3,10 +3,9 @@ var Hogan = require('hogan.js')
 	, Tools = require('./tools')
 	, cacheManager = require('./cache_manager')
 	, util = require('util')
-	, marked = require('marked').setOptions({highlight: function (code) {return require('highlight.js').highlightAuto(code).value;}})
-	, views_path = __dirname + '/../views/';
+	, marked = require('marked').setOptions({highlight: function (code) {return require('highlight.js').highlightAuto(code).value;}});
 
-exports.renderPage = function(pages_path, page_id){
+exports.renderPage = function(pages_path, views_path, page_id){
 
 	var pageLayoutData = new Object();
 	var siteSettings = cacheManager.getSiteSettings();
@@ -59,7 +58,7 @@ exports.renderPage = function(pages_path, page_id){
 		pageData.user_data);
 
 	// Read the Markdown page content and conver it to html
-	var contentMDFilePath = pages_path + '/' + pageData.common_data.id + '/' + siteSettings.page_content_md;
+	var contentMDFilePath = pages_path + pageData.common_data.id + '/' + siteSettings.page_content_md;
 	if(fs.existsSync(contentMDFilePath)){
 		pageContentData.page_body = marked(
 			fs.readFileSync(
