@@ -79,10 +79,10 @@ build = function(){
 	for(n in pages){
 
 		var curPageDir = '';
-		if(!pages[n].presentation_data.external) {
+		if(pages[n].presentation_data.external && pages[n].presentation_data.external) {
 			curPageDir = siteDir + '/' +pages[n].common_data.id;
 			fsTools.rmkdirSync(curPageDir);
-		} else if (pages[n].common_data.id) {
+		} else if (pages[n].common_data.id == '/') {
 			curPageDir = siteDir;
 		} else {
 			curPageDir = siteDir + pages[n].presentation_data.link;
