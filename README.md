@@ -120,7 +120,7 @@ This section describes the main presentation details of the page
 * `disabled` [*required*]: `true` or `false`. In case of `false` appropriate menu item will be disabled. Useful in case of maintenance or so. If *page identifier* equals `half-life-3` page will always be diasabled.
 * `glyphicon` [*optional*]: glyphicon from Bootstrap. In case no glyphicon provided `common_data.title` is used
 * `link` [*optional*]: link name started with `/`. By default link to the page is the same as *page-identifier* (as folder name) but in case you want custom link for the page this parameter should be set
-* `external` [*optional*]: `true` or `false`. In case `link` field points to some external site than appropriate menu item will be added and folder will be created with `index.html` in there which could be used as template for *integrated theme* of some external resource. (See [Integration]() section.)
+* `external` [*optional*]: `true` or `false`. In case `link` field points to some external site than appropriate menu item will be added and folder will be created with `index.html` in there which could be used as template for *integrated theme* of some external resource. (See [Integration](#integration) section.)
 * `page_view` [*optional*]: name of the Mustache template file. By default `./views/page.hjs` is used as a base template for the page representation but you can define own page template. Page will be tried to locate in the page-folder in case nothing is found default it used. In this case of custom view page template `user_data` section could be useful.
 
 ##### user_data #####
@@ -164,7 +164,7 @@ Here is more detailed explanation of the all settings.
 *  `page_content_md` [*required*]: default Markdown file name that will be searched for the page content in the each page-folder
 *  `pages_cache_file` [*required*]: name of the file that will hold the page data cache. It will be placed in the `./cache` folder
 
-## Integration ##
+## <a name="integration"></a> Integration ##
 This section will describe how you can generate template view with proper menu selection and exact look in case you want to embed some blog engine or forum or external website into yours.
 
 Let's for example integrate blog based on [Ghost](http://ghost.org) blog engine. For that let's copy the `blank_page` into the `pages` folder with name `blog`
