@@ -73,7 +73,7 @@ Each page-folder **should** contain
 Each page-folder **can** contain
 
 * `content.md` Markdown file with content of the page
-* `<some-file>.hjs` [*optional*] [Mustache](http://mustache.github.io/)-based template file that will be used to generate page view. (See [presentation_data][] section.)
+* `<some-file>.hjs` [*optional*] [Mustache](http://mustache.github.io/)-based template file that will be used to generate page view. (See [presentation_data](#presentation_data) section.)
 * Some images and other materials related to the generated page. I personally recommend to store such files right in the page-folder. It will be easy to maintain, to update and migrate in future.
 
 Let's look at the settings more closely.
@@ -114,7 +114,7 @@ This section represents the main information about the page:
 * `title` will be used as a page title
 
 
-##### presentation_data #####
+##### <a name="presentation_data"></a> presentation_data #####
 This section describes the main presentation details of the page
 
 * `disabled` [*required*]: `true` or `false`. In case of `false` appropriate menu item will be disabled. Useful in case of maintenance or so. If *page identifier* equals `half-life-3` page will always be diasabled.
