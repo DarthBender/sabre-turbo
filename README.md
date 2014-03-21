@@ -4,7 +4,7 @@
 
 **sabre-turbo** is the lightweight static site generator based on [node.js](http://nodejs.org). It supports [hogan.js](http://twitter.github.io/hogan.js/) as a template engine, [Bootstrap](http://getbootstrap.com) as a style provider and [Markdown](http://daringfireball.net/projects/markdown/)-based documents as a content providers. 
 
-(http://technogeek.io) was generated using **sabre-turbo**.
+http://technogeek.io was generated using **sabre-turbo**.
 
 ## Installation
 
@@ -73,7 +73,7 @@ Each page-folder **should** contain
 Each page-folder **can** contain
 
 * `content.md` Markdown file with content of the page
-* `<some-file>.hjs` [*optional*] [Mustache](http://mustache.github.io/)-based template file that will be used to generate page view. (See [presentation_data]() section.)
+* `<some-file>.hjs` [*optional*] [Mustache](http://mustache.github.io/)-based template file that will be used to generate page view. (See [presentation_data][] section.)
 * Some images and other materials related to the generated page. I personally recommend to store such files right in the page-folder. It will be easy to maintain, to update and migrate in future.
 
 Let's look at the settings more closely.
