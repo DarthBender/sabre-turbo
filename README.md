@@ -4,7 +4,7 @@
 
 **sabre-turbo** is the lightweight static site generator based on [node.js](http://nodejs.org). It supports [hogan.js](http://twitter.github.io/hogan.js/) as a template engine, [Bootstrap](http://getbootstrap.com) as a style provider and [Markdown](http://daringfireball.net/projects/markdown/)-based documents as a content providers. 
 
-This site was generated using **sabre-turbo**.
+(http://technogeek.io) was generated using **sabre-turbo**.
 
 ## Installation
 
