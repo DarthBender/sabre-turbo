@@ -1,0 +1,13 @@
+{
+	"common_data": 
+		{
+			"title":"blog"
+		},
+	"presentation_data":
+		{
+			"diasabled":false,
+			"link":"http://blog.example.com",
+			"external":true
+		}
+
+}
