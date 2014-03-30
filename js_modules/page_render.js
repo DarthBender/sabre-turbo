@@ -52,6 +52,10 @@ exports.renderPage = function(pages_path, views_path, page_id){
 			menuData, 
 			pageData.common_data);
 
+	pageContentData.title = siteSettings.site_title; 
+			+ !pageData.title || pageData.title == '' ? '' : ' - ' + pageData.title;
+
+
 	// Collect user data if such presented in case of cutom used in Mustache view 
 	Tools.mergeObjects(
 		pageContentData, 

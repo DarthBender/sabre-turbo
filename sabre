@@ -3,34 +3,8 @@
 var builderStates = Object.freeze({init:'init', build:'build', update:'update'})
 	, argv = process.argv.slice(2)
 	, fsTools = require('./js_modules/fs_tools')
-	, cacheManager = require('./js_modules/cache_manager')
-	, pageCollector = require('./js_modules/page_collector')
-	, pageRenderer = require('./js_modules/page_render')
+	, pageBuilder = require('./js_modules/page_builder')
 	, errorHandler = require('./js_modules/error_handler');
-
-saintyCheck = function(clear) {
-	var siteDir = process.cwd() + '/site';
-	var pagesDir = process.cwd() + '/pages';
-	var cacheDir = process.cwd() + '/cache';
-
-	if(!fsTools.existsSync(siteDir)) {
-		return false;
-	}
-
-	if(!fsTools.existsSync(pagesDir)) {
-		return false;
-	}
-
-	if(clear) {
-		fsTools.rmkdirSync(cacheDir);
-	} else {
-		if(!fsTools.existsSync(cacheDir)) {
-			return false;
-		}		
-	}
-
-	return true;
-};
 
 printUsage = function() {};
 
@@ -52,54 +26,7 @@ init = function(prjName) {
 };
 
 build = function() {
-
-	var root = process.cwd();
-	var siteDir = root + '/site/';
-	var pagesDir = root + '/pages/';
-	var cacheDir = root + '/cache/';
-	var viewsDir = root + '/views/';
-
-	if(!saintyCheck(true)) {
-		printUsage();
-		process.exit(0);
-	}
-
-	var pages = null;
-	try {
-		// Collect all pages
-		pages = pageCollector.collectPages(pagesDir, cacheDir + 'pages.json');
-		// And cache them
-		cacheManager.cachePages(pages);
-	} catch (err) {
-		errorHandler.error("Problem loading pages. " + err);
-		process.exit(1);
-	}
-
-	// Now go through all the pages
-	// and generate static output
-	for(n in pages){
-
-		var curPageDir = '';
-		if(pages[n].presentation_data.external && pages[n].presentation_data.external) {
-			curPageDir = siteDir + pages[n].common_data.id + '/';
-			fsTools.rmkdirSync(curPageDir);
-		} else if (pages[n].common_data.id == '/') {
-			curPageDir = siteDir;
-		} else {
-			curPageDir = siteDir + pages[n].presentation_data.link + '/';
-			fsTools.rmkdirSync(curPageDir);
-		}
-
-		var fileName = 
-		fsTools.writeFile(
-			curPageDir + 'index.html',
-			pageRenderer.renderPage(pagesDir, viewsDir, pages[n].common_data.id),
-			function(err) {
-				if(err){
-					errorHandler.error(err);
-				}
-			});
-	}
+	pageBuilder.buildSite();
 };
 
 update = function() {
