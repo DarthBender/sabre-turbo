@@ -1,6 +1,7 @@
 var	pageCollector = require('./page_collector')
 	, pageRenderer = require('./page_render')
 	, cacheManager = require('./cache_manager')
+	, errorHandler = require('./error_handler')
 	, fsTools = require('./fs_tools');
 
 saintyCheck = function(clear) {
@@ -21,7 +22,7 @@ saintyCheck = function(clear) {
 	} else {
 		if(!fsTools.existsSync(cacheDir)) {
 			return false;
-		}		
+		}
 	}
 
 	return true;
@@ -65,7 +66,7 @@ exports.buildSite = function() {
 			fsTools.rmkdirSync(curPageDir);
 		}
 
-		var fileName = 
+		var fileName =
 		fsTools.writeFile(
 			curPageDir + 'index.html',
 			pageRenderer.renderPage(pagesDir, viewsDir, pages[n].common_data.id),

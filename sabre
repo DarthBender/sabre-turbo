@@ -12,7 +12,8 @@ init = function(prjName) {
 	var projDir = process.cwd() + '/' + prjName;
 
 	if(fsTools.existsSync(prjName)) {
-		errorHandler.error('There already exists directory with name ' + prjName + '!');
+		errorHandler.error(
+			'There already exists directory with name ' + prjName + '!');
 		process.exit(1);
 	}
 

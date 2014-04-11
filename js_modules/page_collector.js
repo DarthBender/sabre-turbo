@@ -14,15 +14,35 @@ exports.getHomePage = function(){
 	page.common_data = new Object();
 	page.common_data.title = 'Home';
 	page.common_data.id = '/';
-	
+
 	page.presentation_data = new Object();
 	page.presentation_data.link = '/';
-	page.presentation_data.glyphicon = cacheManager.getSiteSettings().home_glyphicon;
-	page.presentation_data.page_view = cacheManager.getSiteSettings().home_view;
+	page.presentation_data.glyphicon =
+						cacheManager.getSiteSettings().home_glyphicon;
+	page.presentation_data.page_view =
+						cacheManager.getSiteSettings().home_view;
 	page.presentation_data.disabled = false;
-	
+
 	return page;
 };
+
+exports.generateEmptyPageById = function(page_id){
+	var page = new Object();
+
+	page.common_data = new Object();
+	page.common_data.title = cacheManager.getSiteSettings().site_title;
+	page.common_data.id = page_id;
+
+	page.presentation_data = new Object();
+	page.presentation_data.link = '/' + page_id;
+	page.presentation_data.glyphicon =
+						cacheManager.getSiteSettings().home_glyphicon;
+	page.presentation_data.page_view =
+						cacheManager.getSiteSettings().page_view;
+	page.presentation_data.disabled = false;
+
+	return page;
+}
 
 exports.collectEntriesDataSync = function(entries_path){
 	var files = fsTools.readdirSync(entries_path);
@@ -32,33 +52,43 @@ exports.collectEntriesDataSync = function(entries_path){
 	for(var idx in files){
 		var entry_id = files[idx];
 		// Read page settings
-		var data = fsTools.readFileSync(entries_path + '/' + entry_id + '/' + cacheManager.getSiteSettings().entry_data);
-		if(data){
-			var entry_data;
+		var data_file_path = entries_path
+			+ '/'
+			+ entry_id
+			+ '/'
+			+ cacheManager.getSiteSettings().entry_data;
+
+		var entry_data = null;
 			try {
-				entry_data = JSON.parse(data);
+					if(fsTools.existsSync(data_file_path)){
+						entry_data = JSON.parse(
+							fsTools.readFileSync(
+								data_file_path));
+					}
 			} catch (err) {
-				errorHandler.error("Data for page '" + entry_id + "' cannot be parsed!");
-				return null;
-			}
-			if(entry_data){
-				collected_entries[idx] = entry_data;
+				errorHandler.error(
+					"Data for page '" + entry_id + "' cannot be parsed!");
 			}
 
-			// Point 'link' field to entry_id in case setting has no cutom page link
-			// 'link' value should start with '/' for better matching with routes
-			if(!collected_entries[idx].presentation_data.link){
-				collected_entries[idx].presentation_data.link = '/' + entry_id;
-			}
-
-			// Fill 'id' field
-			collected_entries[idx].common_data.id = entry_id;
-		} else {
-			errorHandler.error("Data for page '" + entry_id + "' cannot be loaded!");
-			return null;
+		if(entry_data == null){
+			entry_data = this.generateEmptyPageById(entry_id);
 		}
-	}
 
+		collected_entries[idx] = entry_data;
+		// Point 'link' field to entry_id in case setting has no cutom page
+		// link 'link' value should start with '/' for better matching with
+		// routes
+		if(!collected_entries[idx].presentation_data.link){
+			collected_entries[idx].presentation_data.link = '/' + entry_id;
+		}
+
+		// Fill 'id' field
+		if(!collected_entries[idx].presentation_data.id ||
+			collected_entries[idx].presentation_data.id == ''){
+			collected_entries[idx].common_data.id = entry_id;
+		}
+
+	}
 	return collected_entries;
 
 };
