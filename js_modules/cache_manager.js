@@ -4,29 +4,31 @@ var util = require('util')
 	, siteSettings = null
 	, pagesCacheSuffix = '/cache/pages.json'
 	, settingsSuffix = '/settings.json'
-	, fsTools = require('./fs_tools')
+	, fs = require('fs')
 	, errorHandler = require('./error_handler');
 
-exports.getSiteSettings = function(){
+var cacheManager = new Object();
+
+cacheManager.getSiteSettings = function(){
 	if(!siteSettings){
 		siteSettings = JSON.parse(
-			fsTools.readFileSync(process.cwd() + settingsSuffix));
+			fs.readFileSync(process.cwd() + settingsSuffix));
 	}
 
 	return siteSettings;
 }
 
-exports.getPages = function(){
+cacheManager.getPages = function(){
 	if(!pagesCache){
 		pagesCache = JSON.parse(
-			fsTools.readFileSync(process.cwd() + pagesCacheSuffix));
+			fs.readFileSync(process.cwd() + pagesCacheSuffix));
 	}
 
 
 	return pagesCache;
 }
 
-exports.getMenuItemsData = function(){
+cacheManager.getMenuItemsData = function(){
 	if(!menu_items){
 		var full_page_data = this.getPages();
 
@@ -47,7 +49,7 @@ exports.getMenuItemsData = function(){
 	return menu_items;
 };
 
-exports.getFullPageInfoById = function(page_id){
+cacheManager.getFullPageInfoById = function(page_id){
 	if(!pagesCache){
 		this.getPages();
 	}
@@ -60,8 +62,10 @@ exports.getFullPageInfoById = function(page_id){
 	return null;
 };
 
-exports.cachePages = function(pages){
+cacheManager.cachePages = function(pages){
 	pagesCache = pages;
 	// Write collected pages cache
-	fsTools.writeFileSync(process.cwd() + pagesCacheSuffix, JSON.stringify(pages));
+	fs.writeFileSync(process.cwd() + pagesCacheSuffix, JSON.stringify(pages));
 }
+
+module.exports = cacheManager;

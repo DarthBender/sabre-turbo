@@ -1,26 +1,27 @@
-var	pageCollector = require('./page_collector')
+var pageCollector = require('./new_page_collector')
 	, pageRenderer = require('./page_render')
 	, cacheManager = require('./cache_manager')
 	, errorHandler = require('./error_handler')
-	, fsTools = require('./fs_tools');
+	, fs = require('fs')
+	, fsHelper = require('./fs_helper');
 
 saintyCheck = function(clear) {
 	var siteDir = process.cwd() + '/site';
 	var pagesDir = process.cwd() + '/pages';
 	var cacheDir = process.cwd() + '/cache';
 
-	if(!fsTools.existsSync(siteDir)) {
+	if(!fs.existsSync(siteDir)) {
 		return false;
 	}
 
-	if(!fsTools.existsSync(pagesDir)) {
+	if(!fs.existsSync(pagesDir)) {
 		return false;
 	}
 
 	if(clear) {
-		fsTools.rmkdirSync(cacheDir);
+		fsHelper.rmkdirSync(cacheDir);
 	} else {
-		if(!fsTools.existsSync(cacheDir)) {
+		if(!fs.existsSync(cacheDir)) {
 			return false;
 		}
 	}
@@ -44,10 +45,12 @@ exports.buildSite = function() {
 	try {
 		// Collect all pages
 		pages = pageCollector.collectPages(pagesDir, cacheDir + 'pages.json');
+		errorHandler.debug(util.inspect(pages));
+		process.exit(0);
 		// And cache them
 		cacheManager.cachePages(pages);
 	} catch (err) {
-		errorHandler.error("Problem loading pages. " + err);
+		errorHandler.exception("Problem loading pages.", err);
 		process.exit(1);
 	}
 
@@ -58,16 +61,16 @@ exports.buildSite = function() {
 		var curPageDir = '';
 		if(pages[n].presentation_data.external && pages[n].presentation_data.external) {
 			curPageDir = siteDir + pages[n].common_data.id + '/';
-			fsTools.rmkdirSync(curPageDir);
+			fsHelper.rmkdirSync(curPageDir);
 		} else if (pages[n].common_data.id == '/') {
 			curPageDir = siteDir;
 		} else {
 			curPageDir = siteDir + pages[n].presentation_data.link + '/';
-			fsTools.rmkdirSync(curPageDir);
+			fsHelper.rmkdirSync(curPageDir);
 		}
 
 		var fileName =
-		fsTools.writeFile(
+		fs.writeFile(
 			curPageDir + 'index.html',
 			pageRenderer.renderPage(pagesDir, viewsDir, pages[n].common_data.id),
 			function(err) {

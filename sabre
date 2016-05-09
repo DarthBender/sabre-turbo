@@ -2,16 +2,18 @@
 
 var builderStates = Object.freeze({init:'init', build:'build', update:'update'})
 	, argv = process.argv.slice(2)
-	, fsTools = require('./js_modules/fs_tools')
+	, fsHelper = require('./js_modules/fs_helper')
+	, fs = require('fs')
 	, pageBuilder = require('./js_modules/page_builder')
-	, errorHandler = require('./js_modules/error_handler');
+	, errorHandler = require('./js_modules/error_handler')
+	, util = require('util');
 
 printUsage = function() {};
 
 init = function(prjName) {
 	var projDir = process.cwd() + '/' + prjName;
 
-	if(fsTools.existsSync(prjName)) {
+	if(fs.existsSync(prjName)) {
 		errorHandler.error(
 			'There already exists directory with name ' + prjName + '!');
 		process.exit(1);
@@ -20,10 +22,10 @@ init = function(prjName) {
 	// check is directory exist and remove it
 	// in case of 'init' we need rebuild site
 	// from the scratch
-	fsTools.rmkdirSync(projDir);
+	fsHelper.rmkdirSync(projDir);
 
 	// Initalize site dierctory with common data
-	fsTools.copyInitialSeedSiteData(projDir);
+	fsHelper.copyInitialSeedSiteData(projDir);
 };
 
 build = function() {
@@ -53,7 +55,7 @@ try {
 } catch (err) {
 	if(err) {
 		errorHandler.error('There was a problem executing sabre-turbo!');
-		errorHandler.error(err);
+		errorHandler.error(util.inspect(err));
 		process.exit(1);
 	}
 }

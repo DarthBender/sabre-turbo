@@ -1,7 +1,7 @@
 var path = require('path')
 	, util = require('util')
 	, pages = null
-	, fsTools = require('./fs_tools')
+	, fs = require('fs')
 	, cacheManager = require('./cache_manager')
 	, errorHandler = require('./error_handler');
 
@@ -45,7 +45,7 @@ exports.generateEmptyPageById = function(page_id){
 }
 
 exports.collectEntriesDataSync = function(entries_path){
-	var files = fsTools.readdirSync(entries_path);
+	var files = fs.readdirSync(entries_path);
 	var collected_entries = new Array();
 
 	// Collect informaion about pages from the appropriate folder
@@ -60,9 +60,9 @@ exports.collectEntriesDataSync = function(entries_path){
 
 		var entry_data = null;
 			try {
-					if(fsTools.existsSync(data_file_path)){
+					if(fs.existsSync(data_file_path)){
 						entry_data = JSON.parse(
-							fsTools.readFileSync(
+							fs.readFileSync(
 								data_file_path));
 					}
 			} catch (err) {

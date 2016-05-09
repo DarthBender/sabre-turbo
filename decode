@@ -1,0 +1,7 @@
+#!/usr/bin/env node
+
+var policy = "idmx:bluemix://some.long.url.com?name=test1&param=test2";
+var encodedOnce = encodeURIComponent(policy);
+console.log(encodedOnce);
+var encodedTwice = encodeURIComponent(encodedOnce);
+console.log(encodedTwice);

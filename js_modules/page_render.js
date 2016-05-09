@@ -1,6 +1,6 @@
 var Hogan = require('hogan.js')
 	, fs = require('fs')
-	, Tools = require('./tools')
+	, tools = require('./obj_tools')
 	, cacheManager = require('./cache_manager')
 	, util = require('util')
 	, marked = require('marked').setOptions(
@@ -60,7 +60,7 @@ exports.renderPage = function(pages_path, views_path, page_id){
 	// Get data for page content
 	// Collect data for the menu
 	var pageContentData =
-		Tools.mergeObjects(
+		tools.mergeObjects(
 			menuData,
 			pageData.common_data);
 
@@ -69,7 +69,7 @@ exports.renderPage = function(pages_path, views_path, page_id){
 
 
 	// Collect user data if such presented in case of cutom used in Mustache view
-	Tools.mergeObjects(
+	tools.mergeObjects(
 		pageContentData,
 		pageData.user_data);
 

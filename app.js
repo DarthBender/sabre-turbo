@@ -12,7 +12,7 @@ var express = require('express')
   , PageCollector = require('./js_modules/page_collector')
   , DataProvider = require('./js_modules/data_provider')
   , PageRenderer = require('./js_modules/page_render');
-   
+
 var app = express();
 
 // all environments
@@ -53,7 +53,7 @@ for(n in pages){
 
   var entryPath = __dirname + '/pages';
 	app.get(pages[n].presentation_data.link, function(req, res){
-    res.send(PageRenderer.getPage(__dirname + '/pages', req.route.path)); 
+    res.send(PageRenderer.getPage(__dirname + '/pages', req.route.path));
   });
 }
 
